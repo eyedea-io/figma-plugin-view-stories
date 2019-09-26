@@ -1,7 +1,8 @@
-import {STATUSES, COLORS, STATUS_TEXT} from './helpers'
+import {COLORS, STATUS_TEXT} from './helpers'
 
 figma.showUI(__html__, {
-  height: 600
+  height: 400,
+  width: 400
 })
 
 interface Message {
@@ -30,21 +31,6 @@ figma.ui.onmessage = msg => {
     default:
       break
   }
-
-  // if (msg.type === 'create-rectangles') {
-  //   const nodes = []
-
-  //   for (let i = 0; i < msg.count; i++) {
-  //     const rect = figma.createRectangle()
-  //     rect.x = i * 150
-  //     rect.fills = [{type: 'SOLID', color: {r: 1, g: 0.5, b: 0}}]
-  //     figma.currentPage.appendChild(rect)
-  //     nodes.push(rect)
-  //   }
-
-  //   figma.currentPage.selection = nodes
-  //   figma.viewport.scrollAndZoomIntoView(nodes)
-  // }
 }
 
 function handleAddStory(message: Message) {
@@ -89,6 +75,24 @@ function handleRemoveStory(message: Message) {
       payload: stories
     })
   }
+}
+
+function getStatusesGroup() {
+  const statusesGroupId = figma.currentPage.getPluginData('statusFrameId')
+  let group = figma.currentPage.findOne(item => item.id === statusesGroupId)
+
+  if (!group) {
+    group = figma.createFrame()
+    group.name = '# Statuses'
+    group.clipsContent = false
+    group.x = 0
+    group.y = 0
+    group.resizeWithoutConstraints(1, 1)
+    figma.currentPage.appendChild(group)
+    figma.currentPage.setPluginData('statusFrameId', group.id)
+  }
+
+  return group as FrameNode
 }
 
 function init() {
@@ -142,6 +146,7 @@ async function handelFrameStatusUpdate(message: Message) {
   await figma.loadFontAsync({family: 'Arial', style: 'Bold'})
   const FRAME_WIDTH = 120
   const FRAME_HEIGHT = 30
+  const group = getStatusesGroup()
 
   let statuses = figma.currentPage.getPluginData('statuses')
   statuses = statuses ? JSON.parse(statuses) : {}
@@ -183,7 +188,7 @@ async function handelFrameStatusUpdate(message: Message) {
       name: message.payload,
       frameId: frame.id
     }
-    figma.currentPage.appendChild(frame)
+    group.appendChild(frame)
   })
   figma.currentPage.setPluginData('statuses', JSON.stringify(statuses))
 }

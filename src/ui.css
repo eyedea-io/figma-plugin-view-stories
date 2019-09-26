@@ -1,5 +1,5 @@
 body {
-  margin: 16px;
+  margin: 0;
   user-select: none;
 }
 label {
@@ -25,16 +25,63 @@ select:focus {
   border: 1px solid #30c2ff;
 }
 hr {
-  margin: 16px -16px;
+  margin: 16px 0;
   border: none;
   border-bottom: 1px solid #e5e5e5;
 }
+form {
+  margin: 0;
+}
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+section {
+}
+#react-page {
+  height: 100vh;
+}
+.content {
+  display: grid;
+  grid-template-rows: auto auto 1fr;
+  height: 100vh;
+  max-height: 100%;
+  overflow: hidden;
+}
+.view-status {
+  padding: 0 16px;
+}
+.stories {
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  overflow: hidden;
+  padding: 0 16px 16px;
+}
+.stories__empty {
+  display: grid;
+  align-items: center;
+  justify-items: center;
+}
+.stories__empty-inner {
+  text-align: center;
+  line-height: 16px;
+}
+.stories__empty-inner svg {
+  margin-bottom: 16px;
+}
 .story-list {
   padding: 0;
-  margin: 0 -16px;
+  margin: 0 -14px 0 -16px;
   list-style: none;
-  overflow: auto;
-  max-height: 300px;
+  overflow-y: scroll;
+}
+.story-list::-webkit-scrollbar {
+  width: 4px;
+}
+.story-list::-webkit-scrollbar-thumb {
+  border-radius: 10px;
+  background-color: rgba(0, 0, 0, 0.1);
 }
 .story-list__item {
   padding: 8px 16px;
@@ -65,16 +112,16 @@ hr {
   height: 14px;
   display: inline-block;
   border-radius: 14px;
-  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(0, 0, 0, 0.1);
   opacity: 1;
-  transition: box-shadow 0.25s;
+  transition: border 0.25s;
   cursor: pointer;
 }
 .story-list__item.is-done {
   color: #aaa;
 }
 .story-list__item.is-done .story-list__item-toggle {
-  box-shadow: 0 0 0 1px transparent;
+  border: 1px solid transparent;
 }
 .stories-input[type='text'] {
   width: 100%;
@@ -84,6 +131,7 @@ hr {
 }
 .story-list__item-remove {
   opacity: 0;
+  box-sizing: content-box;
   transition: opacity 0.25s, color 0.25s;
   color: hsla(0, 0%, 50%, 1);
   padding: 6px;
@@ -95,4 +143,17 @@ hr {
 }
 .story-list__item:hover .story-list__item-remove {
   opacity: 1;
+}
+.empty-view {
+  display: grid;
+  align-items: center;
+  justify-items: center;
+  font-size: 14px;
+  height: 100vh;
+}
+.empty-view__inner {
+  text-align: center;
+}
+.empty-view__inner svg {
+  margin-bottom: 16px;
 }
