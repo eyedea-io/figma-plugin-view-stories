@@ -1,0 +1,2 @@
+# figma-plugin-view-stories
+ 
