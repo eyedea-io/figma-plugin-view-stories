@@ -143,9 +143,9 @@ function handleSelectionChange() {
 }
 
 async function handelFrameStatusUpdate(message: Message) {
-  await figma.loadFontAsync({family: 'Arial', style: 'Bold'})
-  const FRAME_WIDTH = 120
-  const FRAME_HEIGHT = 30
+  await figma.loadFontAsync({family: 'Roboto', style: 'Black'})
+  const FRAME_WIDTH = 200
+  const FRAME_HEIGHT = 40
   const group = getStatusesGroup()
 
   let statuses = figma.currentPage.getPluginData('statuses')
@@ -171,15 +171,16 @@ async function handelFrameStatusUpdate(message: Message) {
     frame.backgrounds = [{type: 'SOLID', color: COLORS[message.payload]}]
     if (frame.children.length === 0) {
       const text = figma.createText()
-      text.fontName = {family: 'Arial', style: 'Bold'}
+      text.fontName = {family: 'Roboto', style: 'Black'}
       text.fontSize = 12
       text.fills = [{type: 'SOLID', color: {r: 1, g: 1, b: 1}}]
-      text.textAlignHorizontal = 'CENTER'
+      text.textAlignHorizontal = 'LEFT'
       text.textAlignVertical = 'CENTER'
       text.characters = STATUS_TEXT[message.payload]
-      text.x = 0
+      text.textCase = 'UPPER'
+      text.x = 32
       text.y = 0
-      text.resizeWithoutConstraints(FRAME_WIDTH, FRAME_HEIGHT)
+      text.resizeWithoutConstraints(FRAME_WIDTH - 32, FRAME_HEIGHT)
       frame.appendChild(text)
     } else if (frame.children[0]) {
       ;(frame.children[0] as TextNode).characters = STATUS_TEXT[message.payload]
