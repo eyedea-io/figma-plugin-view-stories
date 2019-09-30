@@ -11,3 +11,14 @@ type SelectedFrame = {
     frameId: string
   }
 }
+
+type Detail = {
+  id?: string
+  status?: string
+  frameId?: string
+  rejectionReason?: string
+  name?: string
+}
+type Details = {
+  [frameId: string]: Detail
+}

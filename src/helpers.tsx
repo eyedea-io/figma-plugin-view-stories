@@ -1,17 +1,28 @@
 export const post = (pluginMessage: any) => parent.postMessage({pluginMessage}, '*')
-
-export const STATUSES = {
+export const toFigmaColor = ({r, g, b}) => ({
+  r: r / 255,
+  g: g / 255,
+  b: b / 255
+})
+export const figmaColorToRgbString = ({r, g, b}) => `rgb(${r * 255}, ${g * 255}, ${b * 255})`
+export const STATES = {
+  DRAFT: 'draft',
   IN_PROGRESS: 'in-progress',
-  READY_FOR_REVIEW: 'ready-for-review',
-  DONE: 'done'
+  IN_REVIEW: 'in-review',
+  REJECTED: 'rejected',
+  ACCEPTED: 'accepted'
 }
 export const COLORS = {
-  [STATUSES.IN_PROGRESS]: {r: 0.0823529411764706, g: 0.3725490196078431, b: 0.803921568627451},
-  [STATUSES.READY_FOR_REVIEW]: {r: 1, g: 0.5, b: 0},
-  [STATUSES.DONE]: {r: 0.08235, g: 0.80392, b: 0.15294}
+  [STATES.DRAFT]: toFigmaColor({r: 130, g: 130, b: 130}),
+  [STATES.IN_PROGRESS]: toFigmaColor({r: 242, g: 201, b: 76}),
+  [STATES.IN_REVIEW]: toFigmaColor({r: 24, g: 144, b: 255}),
+  [STATES.REJECTED]: toFigmaColor({r: 235, g: 87, b: 87}),
+  [STATES.ACCEPTED]: toFigmaColor({r: 111, g: 207, b: 151})
 }
 export const STATUS_TEXT = {
-  [STATUSES.IN_PROGRESS]: 'In progress',
-  [STATUSES.READY_FOR_REVIEW]: 'Ready for review',
-  [STATUSES.DONE]: 'Done'
+  [STATES.DRAFT]: 'Draft',
+  [STATES.IN_PROGRESS]: 'In progress',
+  [STATES.IN_REVIEW]: 'In review',
+  [STATES.REJECTED]: 'Rejected',
+  [STATES.ACCEPTED]: 'Accepted'
 }

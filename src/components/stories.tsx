@@ -59,14 +59,14 @@ export const Stories = ({stories = [], selectedFrame}: StoriesProps) => {
     <section className="stories">
       <h2>User stories</h2>
       {stories.length ? (
-        <ul className="story-list">
+        <ul className="list">
           {stories.map(item => (
-            <li key={item.id} className={`story-list__item ${item.isDone ? 'is-done' : ''}`}>
-              <div className="story-list__item-toggle" onClick={() => toggle(item)}>
+            <li key={item.id} className={`list__item ${item.isDone ? 'is-done' : ''}`}>
+              <div className="list__item-toggle" onClick={() => toggle(item)}>
                 <CheckIcon />
               </div>
               <span>{item.content}</span>
-              <RemoveIcon className="story-list__item-remove" onClick={() => remove(item)} />
+              <RemoveIcon className="list__item-remove" onClick={() => remove(item)} />
             </li>
           ))}
         </ul>
@@ -90,7 +90,6 @@ export const Stories = ({stories = [], selectedFrame}: StoriesProps) => {
           className="stories-input"
           type="text"
           placeholder="Add view story..."
-          autoFocus
           value={value}
           onChange={e => setValue(e.target.value)}
         />

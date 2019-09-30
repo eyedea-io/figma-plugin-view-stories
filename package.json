@@ -2,7 +2,7 @@
   "name": "sandbox",
   "version": "1.0.0",
   "description": "",
-  "main": "code.js",
+  "main": "dist/code.js",
   "scripts": {
     "build": "npx webpack --mode=production",
     "dev": "npx webpack --watch --mode=production"

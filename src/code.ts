@@ -1,8 +1,8 @@
-import {COLORS, STATUS_TEXT} from './helpers'
+import {COLORS} from './helpers'
 
 figma.showUI(__html__, {
-  height: 400,
-  width: 400
+  height: 560,
+  width: 320
 })
 
 interface Message {
@@ -20,17 +20,42 @@ figma.ui.onmessage = msg => {
   switch (msg.type) {
     case 'ready':
       return init()
-    case 'update-frame-status':
-      return handelFrameStatusUpdate(msg)
+    case 'update-frame-details':
+      return handelFrameDetailsUpdate(msg)
+    case 'update-frame-rejection-reason':
+      return handelRejectionReasonUpdate(msg)
     case 'add-story':
       return handleAddStory(msg)
     case 'toggle-story':
       return handleToggleStory(msg)
     case 'remove-story':
       return handleRemoveStory(msg)
+    case 'focus-frame':
+      return handleFocusFrame(msg)
+    case 'fetch-details':
+      return handleFetchDetails()
     default:
       break
   }
+}
+
+function handleFetchDetails() {
+  figma.ui.postMessage({type: 'update-details', payload: getDetails()})
+}
+
+function handleFocusFrame(message: Message) {
+  const node = figma.currentPage.findOne(item => item.id === message.payload.id)
+  if (message.payload.add) {
+    if (figma.currentPage.selection.some(item => item.id === node.id)) {
+      figma.currentPage.selection = figma.currentPage.selection.filter(item => item.id !== node.id)
+    } else {
+      figma.currentPage.selection = [...figma.currentPage.selection, node]
+    }
+  } else {
+    figma.currentPage.selection = [node]
+  }
+  figma.viewport.scrollAndZoomIntoView(figma.currentPage.selection)
+  handleSelectionChange()
 }
 
 function handleAddStory(message: Message) {
@@ -78,8 +103,8 @@ function handleRemoveStory(message: Message) {
 }
 
 function getStatusesGroup() {
-  const statusesGroupId = figma.currentPage.getPluginData('statusFrameId')
-  let group = figma.currentPage.findOne(item => item.id === statusesGroupId)
+  const statesGroupId = figma.currentPage.getPluginData('statusFrameId')
+  let group = figma.currentPage.findOne(item => item.id === statesGroupId)
 
   if (!group) {
     group = figma.createFrame()
@@ -96,24 +121,32 @@ function getStatusesGroup() {
 }
 
 function init() {
-  const statuses = getStatuses()
+  const details = getDetails()
   const selectedFrames = figma.currentPage.selection.map(node => ({
     id: node.id,
-    status: statuses[node.id]
+    ...details[node.id]
   }))
   figma.ui.postMessage({
     type: 'selection-change',
     payload: {
       selectedFrames,
+      details: getDetails(),
       stories: getStories(figma.currentPage.selection)
     }
   })
   selection = figma.currentPage.selection
 }
 
-function getStatuses() {
-  let statuses = figma.currentPage.getPluginData('statuses')
-  return statuses ? JSON.parse(statuses) : {}
+function getDetails(): Details {
+  let json = figma.currentPage.getPluginData('details')
+  const parsed = json ? JSON.parse(json) : {}
+  Object.entries<Detail>(parsed).forEach(([key, entry]) => {
+    parsed[key] = {
+      ...parsed[key],
+      name: figma.currentPage.findOne(item => item.id === entry.id).name
+    }
+  })
+  return parsed
 }
 
 function getStories(frames: readonly SceneNode[]) {
@@ -127,69 +160,72 @@ function handleSelectionChange() {
   if (selection.map(item => item.id).join(',') === figma.currentPage.selection.map(item => item.id).join(',')) {
     return
   }
-  const statuses = getStatuses()
+  const details = getDetails()
   const selectedFrames = figma.currentPage.selection.map(node => ({
     id: node.id,
-    status: statuses[node.id]
+    ...details[node.id]
   }))
   figma.ui.postMessage({
     type: 'selection-change',
     payload: {
       selectedFrames,
+      details: getDetails(),
       stories: getStories(figma.currentPage.selection)
     }
   })
   selection = figma.currentPage.selection
 }
 
-async function handelFrameStatusUpdate(message: Message) {
+async function handelRejectionReasonUpdate(message: Message) {
+  const details = getDetails()
+  const node = selection[0]
+  details[node.id].rejectionReason = message.payload.rejectionReason
+  figma.currentPage.setPluginData('details', JSON.stringify(details))
+}
+async function handelFrameDetailsUpdate(message: Message) {
   await figma.loadFontAsync({family: 'Roboto', style: 'Black'})
-  const FRAME_WIDTH = 200
+  const FRAME_WIDTH = 40
   const FRAME_HEIGHT = 40
+  const details = getDetails()
   const group = getStatusesGroup()
 
-  let statuses = figma.currentPage.getPluginData('statuses')
-  statuses = statuses ? JSON.parse(statuses) : {}
   selection.forEach(node => {
-    if (message.payload === '' && statuses[node.id]) {
-      const frame = figma.currentPage.findOne(item => item.id === statuses[node.id].frameId)
+    if (message.payload.status === '' && details[node.id]) {
+      const frame = figma.currentPage.findOne(item => item.id === details[node.id].frameId)
       if (frame) {
         frame.remove()
       }
-      delete statuses[node.id]
+      delete details[node.id]
       return
     }
     let frame: FrameNode
-    if (statuses[node.id] && statuses[node.id]) {
-      frame = figma.currentPage.findOne(item => item.id === statuses[node.id].frameId) as FrameNode
+    if (details[node.id]) {
+      frame = figma.currentPage.findOne(item => item.id === details[node.id].frameId) as FrameNode
+    } else {
+      details[node.id] = {
+        id: node.id
+      }
     }
     frame = frame || figma.createFrame()
     frame.name = ' '
     frame.x = node.x + node.width - FRAME_WIDTH
     frame.y = node.y - FRAME_HEIGHT - 10
+    frame.backgrounds = [{type: 'SOLID', color: {r: 0, g: 0, b: 0}, visible: false}]
     frame.resizeWithoutConstraints(FRAME_WIDTH, FRAME_HEIGHT)
-    frame.backgrounds = [{type: 'SOLID', color: COLORS[message.payload]}]
-    if (frame.children.length === 0) {
-      const text = figma.createText()
-      text.fontName = {family: 'Roboto', style: 'Black'}
-      text.fontSize = 12
-      text.fills = [{type: 'SOLID', color: {r: 1, g: 1, b: 1}}]
-      text.textAlignHorizontal = 'LEFT'
-      text.textAlignVertical = 'CENTER'
-      text.characters = STATUS_TEXT[message.payload]
-      text.textCase = 'UPPER'
-      text.x = 32
-      text.y = 0
-      text.resizeWithoutConstraints(FRAME_WIDTH - 32, FRAME_HEIGHT)
-      frame.appendChild(text)
-    } else if (frame.children[0]) {
-      ;(frame.children[0] as TextNode).characters = STATUS_TEXT[message.payload]
-    }
-    statuses[node.id] = {
-      name: message.payload,
-      frameId: frame.id
-    }
+    frame.children.map(item => item.remove())
+
+    const status = figma.createEllipse()
+    status.resizeWithoutConstraints(40, 40)
+    status.fills = [{type: 'SOLID', color: COLORS[message.payload.status]}]
+    frame.appendChild(status)
+
+    details[node.id].frameId = frame.id
+    details[node.id].status = message.payload.status
+    details[node.id].rejectionReason = message.payload.rejectionReason
+
     group.appendChild(frame)
   })
-  figma.currentPage.setPluginData('statuses', JSON.stringify(statuses))
+
+  figma.currentPage.setPluginData('details', JSON.stringify(details))
+  figma.ui.postMessage({type: 'update-details', payload: getDetails()})
 }
