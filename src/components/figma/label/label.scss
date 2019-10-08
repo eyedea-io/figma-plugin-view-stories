@@ -1,0 +1,12 @@
+@import '../utils.scss';
+
+.label {
+  display: flex;
+  align-items: center;
+  height: 32px;
+  padding: 8px 4px 8px 8px;
+  cursor: default;
+  color: var(--figma-black-400);
+  background-color: var(--figma-white);
+  @include text(200);
+}

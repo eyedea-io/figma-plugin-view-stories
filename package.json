@@ -5,22 +5,35 @@
   "main": "dist/code.js",
   "scripts": {
     "build": "npx webpack --mode=production",
-    "dev": "npx webpack --watch --mode=production"
+    "dev": "npx webpack --watch"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@smashing/form": "^0.5.0",
+    "@syncano/client": "^0.16.0-alpha.0d85dd34",
+    "@types/classnames": "^2.2.9",
     "@types/react": "^16.9.3",
     "@types/react-dom": "^16.9.1",
+    "@types/uuid": "^3.4.5",
+    "classnames": "^2.2.6",
     "css-loader": "^3.1.0",
+    "dayjs": "^1.8.16",
     "html-webpack-inline-source-plugin": "0.0.10",
     "html-webpack-plugin": "^3.2.0",
+    "mobx": "^5.13.1",
+    "mobx-react-lite": "^1.4.1",
+    "mobx-state-tree": "^3.14.1",
+    "node-sass": "^4.12.0",
     "react": "^16.9.0",
     "react-dom": "^16.9.0",
+    "react-hot-loader": "^4.12.14",
+    "sass-loader": "^8.0.0",
     "style-loader": "^0.23.1",
     "ts-loader": "^6.0.4",
     "typescript": "^3.6.3",
     "url-loader": "^2.1.0",
+    "uuid": "^3.3.3",
     "webpack": "^4.38.0",
     "webpack-cli": "^3.3.6"
   },
@@ -29,5 +42,8 @@
     "bracketSpacing": false,
     "singleQuote": true,
     "printWidth": 120
+  },
+  "devDependencies": {
+    "@types/node": "^12.7.8"
   }
 }

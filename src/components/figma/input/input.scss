@@ -1,0 +1,74 @@
+@import '../utils.scss';
+
+.input {
+  @include text(200);
+
+  position: relative;
+  display: flex;
+  overflow: visible;
+  align-items: center;
+  width: 100%;
+  height: 30px;
+  margin: 1px 0 1px 0;
+  padding: 8px 4px 8px 7px;
+
+  color: var(--figma-black-800);
+  border: 1px solid transparent;
+  border-radius: var(--border-radius-small);
+  outline: none;
+  background-color: var(--figma-white);
+
+  &:hover {
+    color: var(--figma-black-800);
+    border: 1px solid var(--figma-black-100);
+  }
+
+  &::selection {
+    color: var(--figma-black);
+    background-color: var(--figma-blue-300);
+  }
+
+  &::placeholder {
+    color: var(--figma-black-300);
+    border: 1px solid transparent;
+  }
+
+  &:not(:disabled):not(:hover):placeholder-shown {
+    border: 1px solid transparent;
+    background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAcAAAAABCAYAAABJ5n7WAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAgSURBVHgB7cMBCQAACMTAiR3sX1TQHr+DK2B+I0lSjj29qAEYlIbeBgAAAABJRU5ErkJggg==');
+    background-repeat: no-repeat;
+    background-position: center bottom -0.9px;
+    background-size: calc(100% - 10px) 1px;
+  }
+
+  &:not(:disabled):focus:placeholder-shown {
+    border: 2px solid var(--figma-blue);
+  }
+
+  &:not(:disabled):focus:not(:placeholder-shown) {
+    padding-left: 6px;
+  }
+
+  &:disabled:hover {
+    border: 1px solid transparent;
+  }
+
+  &:active,
+  &:focus {
+    padding: 8px 4px 8px 6px;
+
+    color: var(--figma-black);
+    border: 2px solid var(--figma-blue);
+    border-radius: var(--border-radius-small);
+  }
+
+  &:disabled {
+    position: relative;
+
+    color: var(--figma-black-300);
+  }
+
+  &:disabled:active {
+    padding: 8px 4px 8px 7px;
+  }
+}

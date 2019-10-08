@@ -1,5 +1,6 @@
 const HtmlWebpackInlineSourcePlugin = require('html-webpack-inline-source-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
+const webpack = require('webpack')
 const path = require('path')
 
 module.exports = (env, argv) => ({
@@ -10,7 +11,7 @@ module.exports = (env, argv) => ({
 
   entry: {
     ui: './src/ui.tsx', // The entry point for your UI code
-    code: './src/code.ts' // The entry point for your plugin code
+    api: './src/api.ts' // The entry point for your plugin code
   },
 
   module: {
@@ -20,6 +21,8 @@ module.exports = (env, argv) => ({
 
       // Enables including CSS by doing "import './file.css'" in your TypeScript code
       {test: /\.css$/, loader: [{loader: 'style-loader'}, {loader: 'css-loader'}]},
+
+      {test: /\.scss$/, use: ['style-loader', 'css-loader', 'sass-loader']},
 
       // Allows you to use "<%= require('./file.svg') %>" in your HTML code to get a data URI
       {test: /\.(png|jpg|gif|webp|svg|zip)$/, loader: [{loader: 'url-loader'}]}
@@ -36,6 +39,9 @@ module.exports = (env, argv) => ({
 
   // Tells Webpack to generate "ui.html" and to inline "ui.ts" into it
   plugins: [
+    new webpack.DefinePlugin({
+      'process.env.SYNCANO_PROJECT_INSTANCE': JSON.stringify(process.env.SYNCANO_PROJECT_INSTANCE)
+    }),
     new HtmlWebpackPlugin({
       template: './src/ui.html',
       filename: 'ui.html',

@@ -1,0 +1,48 @@
+//11px
+.nano {
+  @include font-ui-pos('small', 'normal');
+}
+//12px
+.micro {
+  @include font-ui-pos('medium', 'normal');
+}
+//13px
+.milli {
+  @include font-ui-pos('large', 'normal');
+}
+//14px
+.zeta {
+  @include font-ui-pos('xlarge', 'normal');
+}
+
+// font weight
+.fw-normal {
+  font-weight: $font-weight-normal;
+}
+.fw-medium {
+  font-weight: $font-weight-medium;
+}
+.fw-bold {
+  font-weight: $font-weight-bold;
+}
+
+.color {
+  &--black {
+    color: $figma-black;
+  }
+  &--black-3 {
+    color: $figma-black-3;
+  }
+  &--black-8 {
+    color: $figma-black-8;
+  }
+  &--white {
+    color: $figma-white;
+  }
+  &--white-4 {
+    color: $figma-white-4;
+  }
+  &--white-8 {
+    color: $figma-white-8;
+  }
+}

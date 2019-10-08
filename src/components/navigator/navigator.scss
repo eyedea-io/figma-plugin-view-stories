@@ -1,0 +1,75 @@
+@import '../figma/utils';
+
+.navigator {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+
+  overflow: auto;
+
+  &::-webkit-scrollbar {
+    width: 4px;
+  }
+  &::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    background-color: rgba(0, 0, 0, 0.1);
+  }
+
+  &__item {
+    padding: 7px 8px 7px 16px;
+    border: 1px solid transparent;
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    grid-column-gap: 8px;
+    cursor: default;
+
+    &:hover {
+      border-color: var(--figma-blue);
+
+      .context-navigator .navigator--sub & {
+        grid-template-columns: auto 1fr 120px;
+      }
+    }
+
+    &-label {
+      font-feature-settings: 'calt' 1, 'ss02' 1;
+    }
+
+    &-status-select {
+      display: none;
+
+      .navigator__item:hover & {
+        display: inline-block;
+      }
+    }
+
+    &-meta {
+      display: grid;
+      grid-auto-flow: column;
+      align-items: center;
+      margin-top: -8px;
+      margin-bottom: -8px;
+    }
+
+    &-status {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background-color: var(--status-color);
+
+      .navigator__item:hover & {
+        display: none;
+      }
+    }
+
+    .navigator--sub & {
+      padding: 7px 8px 7px 32px;
+    }
+
+    &.is-selected {
+      background-color: var(--figma-selection-a);
+      border-color: transparent;
+    }
+  }
+}

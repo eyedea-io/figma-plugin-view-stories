@@ -1,0 +1,72 @@
+@import '../utils.scss';
+
+.button {
+  display: inline-block;
+  flex-shrink: 0;
+  height: 30px;
+  margin: 1px 0 1px 0;
+  padding: 5px 16px 5px 16px;
+  text-decoration: none;
+  border: 2px solid transparent;
+  border-radius: var(--border-radius-200);
+  outline: none;
+  font-weight: var(--font-weight-200);
+  @include text(200);
+
+  &--solid-primary {
+    color: var(--figma-white);
+    background-color: var(--figma-blue);
+
+    &:enabled:active {
+      border: 2px solid var(--figma-black-300);
+    }
+
+    &:disabled {
+      background-color: var(--figma-black-300);
+    }
+  }
+
+  &--solid-negative {
+    color: var(--figma-white);
+    background-color: var(--figma-red);
+
+    &:enabled:active {
+      border: 2px solid var(--figma-black-300);
+    }
+
+    &:disabled {
+      opacity: 0.4;
+    }
+  }
+
+  &--outline-primary {
+    color: var(--figma-black-800);
+    border: 1px solid var(--figma-black-800);
+    background-color: var(--figma-white);
+
+    &:enabled:active {
+      padding: 4px 15px 4px 15px;
+      border: 2px solid var(--figma-blue);
+    }
+
+    &:disabled {
+      color: var(--figma-black-300);
+      border: 1px solid var(--figma-black-300);
+    }
+  }
+
+  &--outline-negative {
+    color: var(--figma-red);
+    border: 1px solid var(--figma-red);
+    background-color: var(--figma-white);
+
+    &:enabled:active {
+      padding: 4px 15px 4px 15px;
+      border: 2px solid var(--figma-red);
+    }
+
+    &:disabled {
+      opacity: 0.4;
+    }
+  }
+}

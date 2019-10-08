@@ -1,0 +1,17 @@
+@import url('https://rsms.me/inter/inter.css');
+
+body {
+  font: normal 400 11px/16px Inter, Roboto, sans-serif;
+  font-weight: 400;
+  color: #333;
+  user-select: none;
+  margin: 0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}

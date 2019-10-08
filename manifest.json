@@ -1,7 +1,7 @@
 {
-  "name": "View Stories",
+  "name": "Blueprint",
   "id": "758545339371401339",
   "api": "1.0.0",
-  "main": "dist/code.js",
+  "main": "dist/api.js",
   "ui": "dist/ui.html"
 }

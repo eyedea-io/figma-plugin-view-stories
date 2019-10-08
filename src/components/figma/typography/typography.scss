@@ -1,0 +1,26 @@
+@import '../utils.scss';
+
+.text {
+  &--100 {
+    @include text(100);
+  }
+  &--200 {
+    @include text(200);
+  }
+  &--300 {
+    @include text(300);
+  }
+  &--400 {
+    @include text(400);
+  }
+  &--500 {
+    @include text(500);
+  }
+}
+.heading {
+  letter-spacing: normal;
+  font-weight: var(--font-weight-bold);
+}
+.link {
+  color: var(--figma-blue);
+}

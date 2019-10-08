@@ -3,7 +3,6 @@ type Story = {
   isDone: boolean
   content: string
 }
-
 type SelectedFrame = {
   id: string
   status: {
@@ -11,7 +10,6 @@ type SelectedFrame = {
     frameId: string
   }
 }
-
 type Detail = {
   id?: string
   status?: string
@@ -21,4 +19,9 @@ type Detail = {
 }
 type Details = {
   [frameId: string]: Detail
+}
+type Message = {
+  id: string
+  type: string
+  payload: any
 }
