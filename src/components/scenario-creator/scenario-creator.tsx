@@ -27,7 +27,6 @@ const ScenarioCreator = observer(() => {
         : []
     }
   })
-
   const handleScenarioNameKeyUp = React.useCallback((event: React.KeyboardEvent) => {
     if (event.key === 'Enter' && searchInput.current) {
       searchInput.current.focus()
@@ -56,10 +55,20 @@ const ScenarioCreator = observer(() => {
     store.setEditedScenario()
   }, [])
 
+  React.useEffect(() => {
+    const listener = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') cancelCreation()
+    }
+    window.document.addEventListener('keydown', listener)
+    return () => {
+      window.document.removeEventListener('keydown', listener)
+    }
+  }, [])
+
   return (
     <div className="scenario-creator">
       <section>
-        <Field name="title" component={Input} placeholder="Type scenario name..." onKeyUp={handleScenarioNameKeyUp} />
+        <Field autoFocus name="title" component={Input} placeholder="Type scenario name..." onKeyUp={handleScenarioNameKeyUp} />
       </section>
 
       <StatesList form={form} />

@@ -62,3 +62,10 @@ export const STATUS_TEXT = {
   [STATES.REJECTED]: 'Rejected',
   [STATES.ACCEPTED]: 'Accepted'
 }
+export const STATUS_WEIGHT = {
+  [STATES.DRAFT]: 1,
+  [STATES.IN_PROGRESS]: 2,
+  [STATES.IN_REVIEW]: 3,
+  [STATES.ACCEPTED]: 4,
+  [STATES.REJECTED]: 5
+}

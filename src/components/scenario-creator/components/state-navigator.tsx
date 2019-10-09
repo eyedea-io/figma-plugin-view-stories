@@ -5,7 +5,7 @@ import {observer, Observer, useLocalStore} from 'mobx-react-lite'
 import {ContextPlatform, ContextState, Context} from '../../../models'
 import {Navigator} from '../../navigator'
 import {clone} from 'mobx-state-tree'
-import {post} from '../../../helpers'
+import {post, COLORS_RGB, STATES} from '../../../helpers'
 import {FormState, FieldProps} from '@smashing/form'
 import {PlusIcon} from '../../../icons/plus'
 import {autorun} from 'mobx'
@@ -104,7 +104,7 @@ export const StateNavigator = observer<{
           blueprint: {
             uuid: contextState.uuid,
             contextUuid: contextState.contextUuid,
-            status: 'draft'
+            status: STATES.DRAFT
           }
         }).then(res => {
           contextState.setFigmaNodeId(res.id)
@@ -152,7 +152,7 @@ export const StateNavigator = observer<{
           : {
               name: stateName || '',
               contextUuid: existingContext ? existingContext.uuid : newContext.uuid,
-              isDraft: true
+              status: 'draft'
             }
       )
     })
@@ -209,19 +209,22 @@ export const StateNavigator = observer<{
                 return item.name.toLowerCase().indexOf(localStore.search[1].toLowerCase()) >= 0
               }}
               renderStateItemMeta={item => (
-                <IconButton
-                  icon={PlusIcon}
-                  onClick={event => {
-                    event.stopPropagation()
-                    form.setFieldValue(
-                      'states',
-                      form.values.states.concat({
-                        index: v4(),
-                        uuid: item.uuid
-                      })
-                    )
-                  }}
-                />
+                <React.Fragment>
+                  <div className="status" style={{marginRight: 8, '--status-color': COLORS_RGB[item.status]} as any} />
+                  <IconButton
+                    icon={PlusIcon}
+                    onClick={event => {
+                      event.stopPropagation()
+                      form.setFieldValue(
+                        'states',
+                        form.values.states.concat({
+                          index: v4(),
+                          uuid: item.uuid
+                        })
+                      )
+                    }}
+                  />
+                </React.Fragment>
               )}
             />
           )}

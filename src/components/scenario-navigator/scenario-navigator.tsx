@@ -7,6 +7,7 @@ import {Button, IconButton} from '../figma'
 import {ScenarioIcon} from '../../icons/scenario'
 import {PlusIcon} from '../../icons/plus'
 import {PencilIcon} from '../../icons/pencil'
+import {COLORS_RGB} from '../../helpers'
 
 const ScenarioNavigator = observer(() => {
   const store = useStore()
@@ -26,6 +27,7 @@ const ScenarioNavigator = observer(() => {
             <ScenarioIcon />
             <div className="navigator__item-label">{item.title}</div>
             <div className="navigator__item-meta">
+              <div className="status" style={{marginRight: 8, '--status-color': COLORS_RGB[item.status]} as any} />
               <IconButton
                 icon={PencilIcon}
                 onClick={event => {

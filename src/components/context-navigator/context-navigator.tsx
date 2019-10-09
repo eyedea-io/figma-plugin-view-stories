@@ -79,7 +79,10 @@ const ContextNavigator = observer(() => {
                       item.setStatus(value)
                     }}
                   />
-                  <div className="navigator__item-status" style={{'--status-color': COLORS_RGB[item.status]} as any} />
+                  <div
+                    className="navigator__item-status status"
+                    style={{'--status-color': COLORS_RGB[item.status]} as any}
+                  />
                 </React.Fragment>
               )}
             />

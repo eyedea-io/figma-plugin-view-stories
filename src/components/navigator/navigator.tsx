@@ -5,6 +5,7 @@ import {FormState} from '@smashing/form'
 import {NavigatorItem} from './navigator-item'
 import cx from 'classnames'
 import './navigator.scss'
+import {STATES, COLORS_RGB} from '../../helpers'
 
 const ContextIcon = () => (
   <svg xmlns="http://www.w3.org/2000/svg" width="12" viewBox="0 0 576 512">
@@ -50,7 +51,16 @@ const Navigator = observer<NavigatorProps>(
             <React.Fragment key={item.uuid}>
               <div className="navigator__item" key={item.uuid}>
                 {/* Context name */}
-                <ContextIcon /> <span>{item.name}</span>
+                <ContextIcon />
+                <div className="navigator__item-label">{item.name}</div>
+                {item.isAccepted && (
+                  <div className="navigator__item-meta">
+                    <div
+                      className="navigator__item-status status status--large"
+                      style={{'--status-color': COLORS_RGB[STATES.ACCEPTED]} as any}
+                    />
+                  </div>
+                )}
               </div>
               {item.statesWithDraft.filter(stateFilter).length > 0 && (
                 <div className="navigator navigator--sub">

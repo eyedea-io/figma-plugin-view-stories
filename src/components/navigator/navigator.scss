@@ -55,12 +55,7 @@
     }
 
     &-status {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background-color: var(--status-color);
-
-      .navigator__item:hover & {
+      .navigator--sub .navigator__item:hover & {
         display: none;
       }
     }
@@ -73,5 +68,17 @@
       background-color: var(--figma-selection-a);
       border-color: transparent;
     }
+  }
+}
+
+.status {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: var(--status-color);
+
+  &--large {
+    width: 16px;
+    height: 16px;
   }
 }

@@ -1,8 +1,7 @@
 import {types, Instance, getRoot} from 'mobx-state-tree'
 import {Store} from './store'
 import * as customTypes from './utils/custom-types'
-import {post} from './helpers'
-import {v4} from 'uuid'
+import {post, STATES} from './helpers'
 
 export const Detail = types.model('Detail', {})
 export const Profile = types.model('Profile', {
@@ -96,6 +95,11 @@ export const Context = types
         .filter(item => item.contextUuid === self.uuid)
     }
   }))
+  .views(self => ({
+    get isAccepted() {
+      return self.states.every(item => item.status === STATES.ACCEPTED) && self.states.length
+    }
+  }))
 export const Scenario = types
   .model('Scenario', {
     uuid: customTypes.identifierUuid,
@@ -108,6 +112,19 @@ export const Scenario = types
     },
     setStates(states: string[]) {
       self.states.replace(states as any)
+    }
+  }))
+  .views(self => ({
+    get status() {
+      const hasRejectedStatus = self.states.some(item => item.status === STATES.REJECTED)
+      if (hasRejectedStatus) return STATES.REJECTED
+      const everyStateIsAccepted = self.states.every(item => item.status === STATES.ACCEPTED) && self.states.length
+      if (everyStateIsAccepted) return STATES.ACCEPTED
+      const everyStateIsInReview = self.states.every(item => item.status === STATES.IN_REVIEW) && self.states.length
+      if (everyStateIsInReview) return STATES.IN_REVIEW
+      const hasInProgress = self.states.some(item => item.status === STATES.IN_PROGRESS)
+      if (hasInProgress) return STATES.IN_PROGRESS
+      return STATES.DRAFT
     }
   }))
 export interface FigmaPage extends Instance<typeof FigmaPage> {}

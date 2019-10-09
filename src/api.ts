@@ -68,7 +68,6 @@ const actions = {
     const calculations = statesByContext.map(item => {
       return {
         ...item,
-        x: 0,
         y: 0,
         height: Object.entries<typeof states>(item.contexts).reduce((maxHeight, [, states]) => {
           const height = states.reduce((total, state) => total + state.figma.height + 120, 0)
@@ -115,10 +114,10 @@ const actions = {
     frame.backgrounds = [{type: 'SOLID', color: {r: 1, g: 1, b: 1}}]
     frame.resizeWithoutConstraints(width, height)
     frame.setPluginData('blueprint', JSON.stringify(blueprint))
+    frame.setPluginData('status', 'draft')
     page.appendChild(frame)
     actions.organizeStatesPage()
     page.selection = [frame]
-    // figma.viewport.scrollAndZoomIntoView([frame])
     return {id: frame.id}
   },
   setDocumentValue({key, value}: {key: string; value: any}) {

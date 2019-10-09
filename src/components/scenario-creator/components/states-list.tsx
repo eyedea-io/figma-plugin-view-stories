@@ -11,6 +11,7 @@ import {useDrag, useDrop, DropTargetMonitor} from 'react-dnd'
 import {XYCoord} from 'dnd-core'
 import update from 'immutability-helper'
 import {v4} from 'uuid'
+import {COLORS_RGB} from '../../../helpers'
 
 interface DragItem {
   index: number
@@ -100,13 +101,16 @@ const StateItem: React.FC<StateItemProps> = observer(({item, form, index, moveIt
       ref={ref}
       style={{opacity, cursor: 'move'}}
       renderItemMeta={() => (
-        <IconButton
-          icon={MinusIcon}
-          onClick={event => {
-            event.stopPropagation()
-            form.setFieldValue('states', form.values.states.filter((_item, i) => i !== index))
-          }}
-        />
+        <React.Fragment>
+          <div className="status" style={{marginRight: 8, '--status-color': COLORS_RGB[item.status]} as any} />
+          <IconButton
+            icon={MinusIcon}
+            onClick={event => {
+              event.stopPropagation()
+              form.setFieldValue('states', form.values.states.filter((_item, i) => i !== index))
+            }}
+          />
+        </React.Fragment>
       )}
       renderItemLabel={() => (
         <span>
