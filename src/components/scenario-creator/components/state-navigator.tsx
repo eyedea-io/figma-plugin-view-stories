@@ -15,6 +15,7 @@ import {v4} from 'uuid'
 export const StateNavigator = observer<{
   searchInputRef: React.RefObject<HTMLInputElement>
   Field: (props: FieldProps) => JSX.Element
+  save: () => void
   form: FormState<{
     title: string
     platformName: string
@@ -25,7 +26,7 @@ export const StateNavigator = observer<{
       uuid: string
     }[]
   }>
-}>(({searchInputRef, form, Field}) => {
+}>(({searchInputRef, form, Field, save}) => {
   const store = useStore()
   const [platformId] = useDocumentValue('platformId')
   const localStore = useLocalStore(() => ({
@@ -51,10 +52,11 @@ export const StateNavigator = observer<{
       return context ? context.states : []
     }
   }))
-  const handleSearchKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+  const handleSearchKeyDown = async (event: React.KeyboardEvent<HTMLInputElement>) => {
     const [contextName, stateName] = localStore.lastTypedSearch.split('/').map(item => item.trim())
+    const {key, ctrlKey} = event
 
-    if (event.key === 'Tab') {
+    if (key === 'Tab') {
       event.preventDefault()
       let match = []
       if (stateName) {
@@ -79,7 +81,7 @@ export const StateNavigator = observer<{
       } else {
         form.setFieldValue('search', `${match[localStore.lastAutocompleteIndex].name}/`)
       }
-    } else if (event.key === 'Enter' && contextName && stateName) {
+    } else if (key === 'Enter' && contextName && stateName) {
       if (store.draftContext) {
         const context = clone(store.draftContext)
         store.setDraftContext()
@@ -97,7 +99,7 @@ export const StateNavigator = observer<{
           })
         )
         form.setFieldValue('search', '')
-        post<{id: string}>('createStateFrame', {
+        const res = await post<{id: string}>('createStateFrame', {
           name: `${localStore.platform.name} / ${contextState.getContext().name} / ${contextState.name}`,
           width: localStore.platform.width,
           height: localStore.platform.height,
@@ -106,9 +108,8 @@ export const StateNavigator = observer<{
             contextUuid: contextState.contextUuid,
             status: STATES.DRAFT
           }
-        }).then(res => {
-          contextState.setFigmaNodeId(res.id)
         })
+        contextState.setFigmaNodeId(res.id)
         searchInputRef.current.focus()
       } else {
         const contextState = localStore.states.find(item => item.name === localStore.search[1])
@@ -121,6 +122,9 @@ export const StateNavigator = observer<{
         )
         form.setFieldValue('search', '')
       }
+    }
+    if (key === 'Enter' && ctrlKey) {
+      save()
     }
   }
   const handleSearchChange = React.useCallback((event: React.ChangeEvent<HTMLInputElement>) => {

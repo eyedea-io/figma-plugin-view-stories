@@ -68,11 +68,17 @@ const ScenarioCreator = observer(() => {
   return (
     <div className="scenario-creator">
       <section>
-        <Field autoFocus name="title" component={Input} placeholder="Type scenario name..." onKeyUp={handleScenarioNameKeyUp} />
+        <Field
+          autoFocus
+          name="title"
+          component={Input}
+          placeholder="Type scenario name..."
+          onKeyUp={handleScenarioNameKeyUp}
+        />
       </section>
 
       <StatesList form={form} />
-      <StateNavigator searchInputRef={searchInput} form={form} Field={Field} />
+      <StateNavigator save={createScenario} searchInputRef={searchInput} form={form} Field={Field} />
 
       <div className="scenario-creator__footer">
         <Button appearance="outline" onClick={cancelCreation}>
