@@ -2,6 +2,7 @@ import {types, Instance, getRoot} from 'mobx-state-tree'
 import {Store} from './store'
 import * as customTypes from './utils/custom-types'
 import {post} from './helpers'
+import {v4} from 'uuid'
 
 export const Detail = types.model('Detail', {})
 export const Profile = types.model('Profile', {
@@ -44,6 +45,9 @@ export const ContextState = types
     }
   }))
   .views(self => ({
+    get indexUuid() {
+      return v4()
+    },
     getContext(): Context | undefined {
       return getRoot<Store>(self).contexts.get(self.contextUuid, 'uuid')
     }

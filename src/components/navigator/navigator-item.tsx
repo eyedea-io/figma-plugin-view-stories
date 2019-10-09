@@ -13,21 +13,18 @@ const ContextStateIcon = () => (
   </svg>
 )
 
-export const NavigatorItem = observer(
-  ({
-    item,
-    selectedNodeId,
-    setSelectedNodeId,
-    renderItemMeta,
-    renderItemLabel = item => item.name
-  }: {
-    item: ContextState
-    selectedNodeId?: string
-    setSelectedNodeId: (value: string) => void
-    renderItemMeta: (item: ContextState) => React.ReactNode
-    renderItemLabel?: (item: ContextState) => React.ReactNode
-  }) => (
+type NavigatorItemProps = React.HTMLAttributes<{}> & {
+  item: ContextState
+  selectedNodeId?: string
+  setSelectedNodeId: (value: string) => void
+  renderItemMeta: (item: ContextState) => React.ReactNode
+  renderItemLabel?: (item: ContextState) => React.ReactNode
+}
+
+export const NavigatorItem = observer<NavigatorItemProps, HTMLDivElement>(
+  ({item, selectedNodeId, setSelectedNodeId, renderItemMeta, renderItemLabel = item => item.name, ...props}, ref) => (
     <div
+      ref={ref}
       className={cx('navigator__item', {
         'is-selected': item.figmaNodeId === selectedNodeId
       })}
@@ -36,10 +33,14 @@ export const NavigatorItem = observer(
         post('selectNode', {nodeId: item.figmaNodeId})
         setSelectedNodeId(item.figmaNodeId)
       }}
+      {...props}
     >
       <InstanceIcon width={12} height={12} />
       <div className="navigator__item-label">{renderItemLabel(item)}</div>
       <div className="navigator__item-meta">{renderItemMeta(item)}</div>
     </div>
-  )
+  ),
+  {
+    forwardRef: true
+  }
 )
