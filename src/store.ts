@@ -86,7 +86,14 @@ export const Store = types
 
 export const store = Store.create({
   contextPlatforms: {
-    items: [{name: 'Mobile'}, {name: 'Tablet'}, {name: 'Desktop'}, {name: 'Watch'}, {name: 'Email'}, {name: 'Paper'}]
+    items: [
+      {name: 'Mobile', width: 375, height: 812},
+      {name: 'Tablet', width: 768, height: 1024},
+      {name: 'Desktop', width: 1440, height: 1024},
+      {name: 'Watch', width: 136, height: 170},
+      {name: 'Email', width: 600, height: 800},
+      {name: 'Paper', width: 595, height: 842}
+    ]
   }
 })
 export const StoreContext = createContext<Instance<typeof Store>>(store)

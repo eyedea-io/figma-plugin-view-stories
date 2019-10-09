@@ -99,6 +99,8 @@ export const StateNavigator = observer<{
         form.setFieldValue('search', '')
         post<{id: string}>('createStateFrame', {
           name: `${localStore.platform.name} / ${contextState.getContext().name} / ${contextState.name}`,
+          width: localStore.platform.width,
+          height: localStore.platform.height,
           blueprint: {
             uuid: contextState.uuid,
             contextUuid: contextState.contextUuid,

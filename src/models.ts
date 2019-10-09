@@ -51,7 +51,9 @@ export const ContextState = types
   }))
 export const ContextPlatform = types
   .model('ContextPlatform', {
-    name: types.identifier
+    name: types.identifier,
+    width: types.maybe(types.number),
+    height: types.maybe(types.number)
   })
   .views(self => ({
     get contexts(): Context[] {

@@ -11,6 +11,7 @@ const actions = {
     }))
   },
   getPageNodes({pageId}: {pageId: string}) {
+    actions.organizeStatesPage()
     return figma.root.children
       .find(item => item.id === pageId)
       .children.map(item => ({
@@ -27,17 +28,97 @@ const actions = {
       figma.currentPage.selection = [node]
     }
   },
-  createStateFrame({name, blueprint}: {name: string; blueprint: any}) {
+  organizeStatesPage() {
+    const pageId = actions.getDocumentValue({key: 'contextPageId'})
+    const page = figma.root.children.find(item => item.id === pageId && item.type === 'PAGE')
+    if (!page) return {}
+    const states = page.children.map(item => {
+      const [platform, context, state] = item.name.split('/').map(item => item.trim())
+      return {
+        blueprint: {
+          platform,
+          context,
+          state
+        },
+        figma: item
+      }
+    })
+    const statesByPlatform = states.reduce((all, item) => {
+      if (!all[item.blueprint.platform]) {
+        all[item.blueprint.platform] = []
+      }
+      all[item.blueprint.platform].push(item)
+      return all
+    }, {})
+    const statesByContext = Object.entries<typeof states>(statesByPlatform).map(([key, items]) => ({
+      platform: key,
+      contexts: items.reduce(
+        (all, item) => {
+          if (!all[item.blueprint.context]) {
+            all[item.blueprint.context] = []
+          }
+          all[item.blueprint.context].push(item)
+          return all
+        },
+        {} as {
+          [contextName: string]: typeof states
+        }
+      )
+    }))
+    const calculations = statesByContext.map(item => {
+      return {
+        ...item,
+        x: 0,
+        y: 0,
+        height: Object.entries<typeof states>(item.contexts).reduce((maxHeight, [, states]) => {
+          const height = states.reduce((total, state) => total + state.figma.height + 120, 0)
+          return Math.max(maxHeight, height)
+        }, 0)
+      }
+    })
+    calculations.reduce((prev, current, currentIndex) => {
+      calculations[currentIndex].y = prev.y + prev.height + 120
+      return current
+    })
+
+    let contextX: number
+    let stateY: number
+
+    calculations.forEach(platform => {
+      contextX = 0
+
+      Object.entries<typeof states>(platform.contexts).forEach(([contextName, states]) => {
+        const contextWidth = platform.contexts[contextName].reduce(
+          (maxWidth, item) => Math.max(item.figma.width, maxWidth),
+          0
+        )
+        stateY = platform.y
+
+        states.forEach(state => {
+          const frame = page.findOne(node => node.id === state.figma.id)
+          frame.x = contextX
+          frame.y = stateY
+          stateY += state.figma.height + 120
+        })
+
+        contextX += contextWidth + 80
+      })
+    })
+  },
+  createStateFrame({name, blueprint, width, height}: {name: string; blueprint: any; width: number; height: number}) {
     const pageId = actions.getDocumentValue({key: 'contextPageId'})
     const page = figma.root.children.find(item => item.id === pageId && item.type === 'PAGE')
     if (!page) return {}
 
     const frame = figma.createComponent()
     frame.name = name
+    frame.backgrounds = [{type: 'SOLID', color: {r: 1, g: 1, b: 1}}]
+    frame.resizeWithoutConstraints(width, height)
     frame.setPluginData('blueprint', JSON.stringify(blueprint))
     page.appendChild(frame)
+    actions.organizeStatesPage()
     page.selection = [frame]
-    figma.viewport.scrollAndZoomIntoView([frame])
+    // figma.viewport.scrollAndZoomIntoView([frame])
     return {id: frame.id}
   },
   setDocumentValue({key, value}: {key: string; value: any}) {
