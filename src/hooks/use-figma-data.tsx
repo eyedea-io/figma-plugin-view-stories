@@ -60,7 +60,6 @@ export const useFigmaData = () => {
         })
       }
     }
-    // console.log(scenarios, (store.contextStates as any).toJSON())
     store.scenarios.replace(scenarios)
     store.setIsLoading(false)
   }, [contextPageId])

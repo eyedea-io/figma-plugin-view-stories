@@ -32,7 +32,7 @@ const ScenarioCreator = observer(() => {
       searchInput.current.focus()
     }
   }, [])
-  const createScenario = () => {
+  const createOrUpdateScenario = () => {
     if (form.values.title.trim() === '') return
     if (isEdit) {
       store.editedScenario.setTitle(form.values.title)
@@ -46,6 +46,9 @@ const ScenarioCreator = observer(() => {
     post('setDocumentValue', {
       key: 'scenarios',
       value: store.scenarios.items.toJSON().map(item => (item as any).toJSON())
+    })
+    post('setupScenarios', {
+      uuidArr: store.contextStates.items.reduce((all, item) => ({...all, [item.uuid]: item.figmaNodeId}), {})
     })
     store.navigate('scenarios')
     store.setEditedScenario()
@@ -78,13 +81,13 @@ const ScenarioCreator = observer(() => {
       </section>
 
       <StatesList form={form} />
-      <StateNavigator save={createScenario} searchInputRef={searchInput} form={form} Field={Field} />
+      <StateNavigator save={createOrUpdateScenario} searchInputRef={searchInput} form={form} Field={Field} />
 
       <div className="scenario-creator__footer">
         <Button appearance="outline" onClick={cancelCreation}>
           Cancel
         </Button>
-        <Button onClick={createScenario}>{isEdit ? 'Update' : 'Create'}</Button>
+        <Button onClick={createOrUpdateScenario}>{isEdit ? 'Update' : 'Create'}</Button>
       </div>
     </div>
   )

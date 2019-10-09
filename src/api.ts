@@ -1,6 +1,65 @@
 const UI_OPTIONS = {
-  height: 620,
+  height: 720,
   width: 380
+}
+figma.root.setPluginData('scenarios', JSON.stringify([]))
+
+function getPlatformsWithContexts() {
+  const page = getContextPage()
+  const states = page.children.map(item => {
+    const [platform, context, state] = item.name.split('/').map(item => item.trim())
+    return {
+      blueprint: {
+        platform,
+        context,
+        state
+      },
+      figma: item
+    }
+  })
+  const statesByPlatform = states.reduce((all, item) => {
+    if (!all[item.blueprint.platform]) {
+      all[item.blueprint.platform] = []
+    }
+    all[item.blueprint.platform].push(item)
+    return all
+  }, {})
+
+  return Object.entries<typeof states>(statesByPlatform).map(([key, items]) => ({
+    platform: key,
+    contexts: items.reduce(
+      (all, item) => {
+        if (!all[item.blueprint.context]) {
+          all[item.blueprint.context] = []
+        }
+        all[item.blueprint.context].push(item)
+        return all
+      },
+      {} as {
+        [contextName: string]: typeof states
+      }
+    )
+  }))
+}
+
+function getContextPage() {
+  const pageId = actions.getDocumentValue({key: 'contextPageId'})
+  let page = figma.root.children.find(item => item.id === pageId && item.type === 'PAGE')
+  if (!page) {
+    page = figma.createPage()
+    page.name = 'master - States'
+    figma.root.appendChild(page)
+  }
+  return page
+}
+function getScenariosPage() {
+  let scenariosPage = figma.root.children.find(item => item.name === 'master - Scenarios')
+  if (!scenariosPage) {
+    scenariosPage = figma.createPage()
+    scenariosPage.name = 'master - Scenarios'
+    figma.root.appendChild(scenariosPage)
+  }
+  return scenariosPage
 }
 
 const actions = {
@@ -28,48 +87,54 @@ const actions = {
       figma.currentPage.selection = [node]
     }
   },
-  organizeStatesPage() {
-    const pageId = actions.getDocumentValue({key: 'contextPageId'})
-    const page = figma.root.children.find(item => item.id === pageId && item.type === 'PAGE')
-    if (!page) return {}
-    const states = page.children.map(item => {
-      const [platform, context, state] = item.name.split('/').map(item => item.trim())
-      return {
-        blueprint: {
-          platform,
-          context,
-          state
-        },
-        figma: item
-      }
+  setupScenarios({uuidArr}: {uuidArr: {[uuid: string]: string}[]}) {
+    const contextPage = getContextPage()
+    let scenariosPage = getScenariosPage()
+    // Clean scenarios page
+    scenariosPage.children.forEach(item => item.remove())
+    const scenarios: {
+      title: string
+      uuid: string
+      states: string[]
+    }[] = JSON.parse(figma.root.getPluginData('scenarios') || '[]')
+    let scenarioX = 0
+    let scenarioY = 0
+    let scenarioHeight = 0
+    scenarios.forEach(item => {
+      scenarioHeight = 0
+      const nodes = []
+      item.states.forEach(uuid => {
+        const component = contextPage.findOne(node => {
+          return node.type === 'COMPONENT' && node.id === uuidArr[uuid]
+        }) as ComponentNode
+        if (!component) return
+        const instance = component.createInstance()
+        nodes.push(instance)
+        instance.x = scenarioX
+        instance.y = scenarioY
+        scenarioX += instance.width + 30
+        scenarioHeight = Math.max(component.height, scenarioHeight)
+        scenariosPage.appendChild(instance)
+      })
+      figma.group(nodes, scenariosPage).name = item.title
+      scenarioX = 0
+      scenarioY += scenarioHeight + 120
     })
-    const statesByPlatform = states.reduce((all, item) => {
-      if (!all[item.blueprint.platform]) {
-        all[item.blueprint.platform] = []
-      }
-      all[item.blueprint.platform].push(item)
-      return all
-    }, {})
-    const statesByContext = Object.entries<typeof states>(statesByPlatform).map(([key, items]) => ({
-      platform: key,
-      contexts: items.reduce(
-        (all, item) => {
-          if (!all[item.blueprint.context]) {
-            all[item.blueprint.context] = []
-          }
-          all[item.blueprint.context].push(item)
-          return all
-        },
-        {} as {
-          [contextName: string]: typeof states
-        }
-      )
-    }))
+    // platforms.forEach(platform => {
+    //   Object.entries(platform.contexts).forEach(([contextName, states]) => {
+    //     states.forEach()
+    //   })
+    // })
+  },
+  organizeStatesPage() {
+    const contextPage = getContextPage()
+    const statesByContext = getPlatformsWithContexts()
+    type States = typeof statesByContext[0]['contexts'][string]
     const calculations = statesByContext.map(item => {
       return {
         ...item,
         y: 0,
-        height: Object.entries<typeof states>(item.contexts).reduce((maxHeight, [, states]) => {
+        height: Object.entries<States>(item.contexts).reduce((maxHeight, [, states]) => {
           const height = states.reduce((total, state) => total + state.figma.height + 120, 0)
           return Math.max(maxHeight, height)
         }, 0)
@@ -86,7 +151,7 @@ const actions = {
     calculations.forEach(platform => {
       contextX = 0
 
-      Object.entries<typeof states>(platform.contexts).forEach(([contextName, states]) => {
+      Object.entries<States>(platform.contexts).forEach(([contextName, states]) => {
         const contextWidth = platform.contexts[contextName].reduce(
           (maxWidth, item) => Math.max(item.figma.width, maxWidth),
           0
@@ -94,7 +159,7 @@ const actions = {
         stateY = platform.y
 
         states.forEach(state => {
-          const frame = page.findOne(node => node.id === state.figma.id)
+          const frame = contextPage.findOne(node => node.id === state.figma.id)
           frame.x = contextX
           frame.y = stateY
           stateY += state.figma.height + 120
@@ -139,7 +204,6 @@ const actions = {
     return figma.clientStorage.setAsync(key, value)
   }
 }
-
 // Handle requests
 figma.ui.onmessage = async (message: Message) => {
   const payload = await actions[message.type](message.payload)
