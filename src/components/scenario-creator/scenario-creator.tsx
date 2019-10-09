@@ -7,6 +7,7 @@ import {StateNavigator} from './components/state-navigator'
 import {StatesList} from './components/states-list'
 import {useStore} from '../../store'
 import {post} from '../../helpers'
+import {v4} from 'uuid'
 
 const ScenarioCreator = observer(() => {
   const store = useStore()
@@ -18,7 +19,12 @@ const ScenarioCreator = observer(() => {
       platformName: '',
       search: '',
       statusFilter: 'all',
-      states: isEdit ? store.editedScenario.states.map(item => item.uuid) : []
+      states: isEdit
+        ? store.editedScenario.states.map(item => ({
+            index: v4(),
+            uuid: item.uuid
+          }))
+        : []
     }
   })
 
@@ -31,11 +37,11 @@ const ScenarioCreator = observer(() => {
     if (form.values.title.trim() === '') return
     if (isEdit) {
       store.editedScenario.setTitle(form.values.title)
-      store.editedScenario.setStates(form.values.states)
+      store.editedScenario.setStates(form.values.states.map(item => item.uuid))
     } else {
       store.scenarios.add({
         title: form.values.title,
-        states: form.values.states
+        states: form.values.states.map(item => item.uuid)
       })
     }
     post('setDocumentValue', {

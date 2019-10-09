@@ -10,6 +10,7 @@ import {FormState} from '@smashing/form'
 import {useDrag, useDrop, DropTargetMonitor} from 'react-dnd'
 import {XYCoord} from 'dnd-core'
 import update from 'immutability-helper'
+import {v4} from 'uuid'
 
 interface DragItem {
   index: number
@@ -23,7 +24,7 @@ export interface StatesListProps {
     platformName: string
     search: string
     statusFilter: string
-    states: string[]
+    states: {uuid: string; index: string}[]
   }>
 }
 
@@ -122,8 +123,11 @@ const StateItem: React.FC<StateItemProps> = observer(({item, form, index, moveIt
 export const StatesList: React.FC<StatesListProps> = observer(({form}) => {
   const store = useStore()
   const localStore = useLocalStore(() => ({
-    get contextStates(): ContextState[] {
-      return form.values.states.map(item => store.contextStates.get(item, 'uuid'))
+    get contextStates(): {index: string; details: ContextState}[] {
+      return form.values.states.map(item => ({
+        index: item.index,
+        details: store.contextStates.get(item.uuid, 'uuid')
+      }))
     }
   }))
 
@@ -148,7 +152,7 @@ export const StatesList: React.FC<StatesListProps> = observer(({form}) => {
     <div className="states-list">
       <div className="navigator">
         {localStore.contextStates.map((item, index) => (
-          <StateItem moveItem={moveItem} key={`${item.indexUuid}`} item={item} index={index} form={form} />
+          <StateItem moveItem={moveItem} key={`${item.index}`} item={item.details} index={index} form={form} />
         ))}
       </div>
     </div>

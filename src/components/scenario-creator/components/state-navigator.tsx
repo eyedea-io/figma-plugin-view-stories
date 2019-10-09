@@ -10,6 +10,7 @@ import {FormState, FieldProps} from '@smashing/form'
 import {PlusIcon} from '../../../icons/plus'
 import {autorun} from 'mobx'
 import {useDocumentValue} from '../../../hooks/use-document-value'
+import {v4} from 'uuid'
 
 export const StateNavigator = observer<{
   searchInputRef: React.RefObject<HTMLInputElement>
@@ -19,7 +20,10 @@ export const StateNavigator = observer<{
     platformName: string
     search: string
     statusFilter: string
-    states: string[]
+    states: {
+      index: string
+      uuid: string
+    }[]
   }>
 }>(({searchInputRef, form, Field}) => {
   const store = useStore()
@@ -85,7 +89,13 @@ export const StateNavigator = observer<{
         const contextState = clone(store.draftContextState)
         store.setDraftContextState()
         store.contextStates.add(contextState)
-        form.setFieldValue('states', form.values.states.concat(contextState.uuid))
+        form.setFieldValue(
+          'states',
+          form.values.states.concat({
+            index: v4(),
+            uuid: contextState.uuid
+          })
+        )
         form.setFieldValue('search', '')
         post<{id: string}>('createStateFrame', {
           name: `${localStore.platform.name} / ${contextState.getContext().name} / ${contextState.name}`,
@@ -100,7 +110,13 @@ export const StateNavigator = observer<{
         searchInputRef.current.focus()
       } else {
         const contextState = localStore.states.find(item => item.name === localStore.search[1])
-        form.setFieldValue('states', form.values.states.concat(contextState.uuid))
+        form.setFieldValue(
+          'states',
+          form.values.states.concat({
+            index: v4(),
+            uuid: contextState.uuid
+          })
+        )
         form.setFieldValue('search', '')
       }
     }
@@ -195,7 +211,13 @@ export const StateNavigator = observer<{
                   icon={PlusIcon}
                   onClick={event => {
                     event.stopPropagation()
-                    form.setFieldValue('states', form.values.states.concat(item.uuid))
+                    form.setFieldValue(
+                      'states',
+                      form.values.states.concat({
+                        index: v4(),
+                        uuid: item.uuid
+                      })
+                    )
                   }}
                 />
               )}

@@ -45,9 +45,6 @@ export const ContextState = types
     }
   }))
   .views(self => ({
-    get indexUuid() {
-      return v4()
-    },
     getContext(): Context | undefined {
       return getRoot<Store>(self).contexts.get(self.contextUuid, 'uuid')
     }
