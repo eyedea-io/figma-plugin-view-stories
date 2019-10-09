@@ -1,7 +1,8 @@
 @import '../utils.scss';
 
 .button {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
   flex-shrink: 0;
   height: 30px;
   margin: 1px 0 1px 0;
@@ -12,6 +13,10 @@
   outline: none;
   font-weight: var(--font-weight-200);
   @include text(200);
+
+  > svg:first-child {
+    margin-right: 4px;
+  }
 
   &--solid-primary {
     color: var(--figma-white);

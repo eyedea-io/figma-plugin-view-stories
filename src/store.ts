@@ -1,5 +1,5 @@
 import {useContext, createContext} from 'react'
-import {types, Instance, cast} from 'mobx-state-tree'
+import {types, Instance, cast, SnapshotOrInstance} from 'mobx-state-tree'
 import * as customTypes from './utils/custom-types'
 import * as models from './models'
 import Syncano from '@syncano/client'
@@ -7,10 +7,13 @@ import {post} from './helpers'
 
 export const Store = types
   .model('Store', {
-    url: types.optional(types.string, 'contexts'),
+    isLoading: true,
+    editedScenario: types.safeReference(models.Scenario),
+    url: types.optional(types.string, 'scenarios'),
     token: types.maybe(types.string),
     profile: types.maybe(models.Profile),
     organizations: customTypes.collection(models.Organization, 'Organizations'),
+    scenarios: customTypes.collection(models.Scenario, 'Scenarios'),
     details: customTypes.collection(models.Detail, 'Details'),
     pages: customTypes.collection(models.FigmaPage, 'Pages'),
     contexts: customTypes.collection(models.Context, 'Contexts'),
@@ -20,11 +23,17 @@ export const Store = types
     contextStates: customTypes.collection(models.ContextState, 'ContextStates')
   })
   .actions(self => ({
-    setDraftContext(context?: models.Context) {
-      self.draftContext = context
+    setEditedScenario(uuid?: string) {
+      self.editedScenario = uuid as any
     },
-    setDraftContextState(state?: models.ContextState) {
-      self.draftContextState = state
+    setIsLoading(value: boolean) {
+      self.isLoading = value
+    },
+    setDraftContext(context?: SnapshotOrInstance<models.Context>) {
+      self.draftContext = cast(context)
+    },
+    setDraftContextState(state?: SnapshotOrInstance<models.ContextState>) {
+      self.draftContextState = cast(state)
     },
     setToken(token?: string) {
       self.token = token

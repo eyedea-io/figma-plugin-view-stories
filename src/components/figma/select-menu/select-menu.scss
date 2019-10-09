@@ -143,6 +143,7 @@
     overflow: hidden;
     text-overflow: ellipsis;
     font-feature-settings: 'calt' 1, 'ss02' 1;
+    justify-content: space-between;
   }
 
   &__list-item-icon {

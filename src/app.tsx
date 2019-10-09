@@ -6,10 +6,12 @@ import {Text} from './components/figma'
 import {ContextNavigator} from './components/context-navigator'
 import cx from 'classnames'
 import './ui.scss'
-import {ScenarioNavigator} from './components/scenario-navigator'
+import {ScenarioCreator} from './components/scenario-creator'
 import {Settings} from './components/settings'
 import useEffectAsync from './utils/use-async-effect'
 import {post} from './helpers'
+import {Avatar} from './components/avatar'
+import {ScenarioNavigator} from './components/scenario-navigator'
 
 const TABS = [
   {label: 'Contexts', value: 'contexts'},
@@ -25,6 +27,17 @@ const Route = observer<{path: string; component: React.FC}>(({path, component: C
   return null
 })
 
+const TopBar = observer(() => {
+  const store = useStore()
+  if (!store.isLoggedIn) return null
+  return (
+    <div className="top-bar">
+      <Avatar src={store.profile.photo} size={24} />
+      <Text>{store.profile.fullName}</Text>
+    </div>
+  )
+})
+
 export const App = observer(() => {
   const store = useStore()
 
@@ -38,8 +51,10 @@ export const App = observer(() => {
 
   return (
     <div className="view">
+      <TopBar />
       <Route path="contexts" component={ContextNavigator} />
       <Route path="scenarios" component={ScenarioNavigator} />
+      <Route path="scenarios/create" component={ScenarioCreator} />
       <Route path="settings" component={Settings} />
 
       <div className="footer">

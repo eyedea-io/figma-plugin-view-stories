@@ -2,7 +2,7 @@ import * as React from 'react'
 import {useStore} from '../../store'
 import {observer, useLocalStore, Observer} from 'mobx-react-lite'
 import {useForm} from '@smashing/form'
-import {useContextLoader} from '../../hooks/use-context-loader'
+import {useFigmaData} from '../../hooks/use-figma-data'
 import {ContextPlatform, ContextState} from '../../models'
 import {useDocumentValue} from '../../hooks/use-document-value'
 import {Header} from './components/header'
@@ -24,7 +24,6 @@ const NodeStatusSelect = ({value, onChange, className}) => (
 
 const ContextNavigator = observer(() => {
   const store = useStore()
-  const [contextPageId] = useDocumentValue('contextPageId')
   const [platformId, setPlatformId] = useDocumentValue('platformId')
   const {Field, form} = useForm({
     initialValues: {
@@ -38,7 +37,7 @@ const ContextNavigator = observer(() => {
     }
   }))
 
-  useContextLoader(contextPageId)
+  useFigmaData()
 
   // Load platform id from store
   React.useEffect(() => {
@@ -54,6 +53,10 @@ const ContextNavigator = observer(() => {
     localStore.platform &&
     item.getContext().platform.name === localStore.platform.name &&
     (status ? item.status === status : true)
+
+  if (store.isLoading) {
+    return <div />
+  }
 
   return (
     <div className="states-view">

@@ -3,6 +3,7 @@ import {observer} from 'mobx-react-lite'
 import {ContextState} from '../../models'
 import cx from 'classnames'
 import {post} from '../../helpers'
+import {InstanceIcon} from '../../icons/instance'
 
 const ContextStateIcon = () => (
   <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 512 512">
@@ -36,7 +37,7 @@ export const NavigatorItem = observer(
         setSelectedNodeId(item.figmaNodeId)
       }}
     >
-      <ContextStateIcon />
+      <InstanceIcon width={12} height={12} />
       <div className="navigator__item-label">{renderItemLabel(item)}</div>
       <div className="navigator__item-meta">{renderItemMeta(item)}</div>
     </div>

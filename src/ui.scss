@@ -1,8 +1,20 @@
 .view {
   display: grid;
-  grid-template-rows: 1fr auto;
+  grid-template-rows: auto 1fr auto;
   height: 100vh;
   overflow: hidden;
+}
+
+.top-bar {
+  border-bottom: 1px solid var(--figma-silver);
+  padding: 8px;
+  display: grid;
+  align-items: center;
+  justify-content: flex-end;
+  grid-column-gap: 8px;
+  grid-template-columns: min-content;
+  grid-auto-flow: column;
+  white-space: nowrap;
 }
 
 .footer {

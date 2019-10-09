@@ -5,7 +5,9 @@
   padding: 0;
   list-style: none;
 
-  overflow: auto;
+  &:not(.navigator--sub) {
+    overflow: auto;
+  }
 
   &::-webkit-scrollbar {
     width: 4px;

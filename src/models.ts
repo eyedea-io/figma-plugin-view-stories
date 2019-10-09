@@ -1,4 +1,4 @@
-import {types, Instance, IAnyModelType, getRoot} from 'mobx-state-tree'
+import {types, Instance, getRoot} from 'mobx-state-tree'
 import {Store} from './store'
 import * as customTypes from './utils/custom-types'
 import {post} from './helpers'
@@ -24,9 +24,13 @@ export const ContextState = types
     name: types.string,
     figmaNodeId: types.maybe(types.string),
     contextUuid: types.string,
-    status: types.maybe(types.string)
+    status: types.maybe(types.string),
+    isDraft: types.optional(types.boolean, true)
   })
   .actions(self => ({
+    setIsDraft(value: boolean) {
+      self.isDraft = value
+    },
     setFigmaNodeId(value: string) {
       self.figmaNodeId = value
     },
@@ -51,6 +55,12 @@ export const ContextPlatform = types
   .views(self => ({
     get contexts(): Context[] {
       return getRoot<Store>(self).contexts.items.filter(item => item.platform.name === self.name)
+    },
+    get contextsWithDraft(): Context[] {
+      const store = getRoot<Store>(self)
+      return getRoot<Store>(self)
+        .contexts.items.concat(store.draftContext || [])
+        .filter(item => item.platform.name === self.name)
     }
   }))
   .views(self => ({
@@ -76,16 +86,32 @@ export const Context = types
     },
     get statesWithDraft(): ContextState[] {
       const store = getRoot<Store>(self)
+
       return []
         .concat(store.draftContextState ? store.draftContextState : [])
-        .concat(store.contextStates.items)
+        .concat(store.contextStates ? store.contextStates.items : [])
         .filter(item => item.contextUuid === self.uuid)
+    }
+  }))
+export const Scenario = types
+  .model('Scenario', {
+    uuid: customTypes.identifierUuid,
+    title: types.string,
+    states: types.array(types.safeReference(ContextState))
+  })
+  .actions(self => ({
+    setTitle(title: string) {
+      self.title = title || ''
+    },
+    setStates(states: string[]) {
+      self.states.replace(states as any)
     }
   }))
 export interface FigmaPage extends Instance<typeof FigmaPage> {}
 export interface Context extends Instance<typeof Context> {}
 export interface ContextState extends Instance<typeof ContextState> {}
 export interface ContextPlatform extends Instance<typeof ContextPlatform> {}
+export interface Scenario extends Instance<typeof Scenario> {}
 export interface Detail extends Instance<typeof Detail> {}
 export interface Organization extends Instance<typeof Organization> {}
 export interface Profile extends Instance<typeof Profile> {}

@@ -1,52 +1,9 @@
+@import '../figma/utils';
+
 .scenario-navigator {
-  padding: 8px;
-
   &__header {
-    margin: 8px;
-    display: grid;
-    grid-template-columns: 100px auto;
-    grid-column-gap: 8px;
-  }
-}
-
-.empty-states-list {
-  display: grid;
-  align-content: center;
-  justify-items: center;
-  grid-row-gap: 16px;
-  border-bottom: 1px solid var(--figma-silver);
-}
-
-.states-list {
-  margin-bottom: 8px;
-  padding-bottom: 8px;
-  border-bottom: 1px solid var(--figma-silver);
-  overflow: auto;
-
-  &::-webkit-scrollbar {
-    width: 4px;
-  }
-  &::-webkit-scrollbar-thumb {
-    border-radius: 10px;
-    background-color: rgba(0, 0, 0, 0.1);
-  }
-}
-
-.scenario-form {
-  display: grid;
-  overflow: hidden;
-  grid-template-rows: auto 1fr auto 1fr auto;
-
-  section {
-    margin: 8px;
-  }
-
-  &__actions {
-    display: grid;
-    grid-auto-flow: column;
-    grid-column-gap: 8px;
-    grid-auto-columns: min-content;
     padding: 8px;
-    border-top: 1px solid var(--figma-silver);
+    display: grid;
+    justify-items: flex-end;
   }
 }

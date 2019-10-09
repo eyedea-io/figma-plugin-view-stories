@@ -10,6 +10,7 @@ export type SelectMenuProps = Omit<React.SelectHTMLAttributes<{}>, 'onChange'> &
   disabled?: boolean
   alignWithActiveItem?: boolean
   onChange: (value: string) => void
+  dropdownWidth?: number
 }
 
 const SelectMenu: React.FC<SelectMenuProps> = ({
@@ -61,7 +62,10 @@ const SelectMenu: React.FC<SelectMenuProps> = ({
         className={cx('select-menu__list', {
           'select-menu__list--active': isActive
         })}
-        style={{top: activeItemIndex >= 0 && alignWithActiveItem ? activeItemIndex * -26 : 0}}
+        style={{
+          width: props.dropdownWidth,
+          top: activeItemIndex >= 0 && alignWithActiveItem ? activeItemIndex * -26 : 0
+        }}
       >
         {options.map(item => (
           <li

@@ -15,7 +15,8 @@ const actions = {
       .find(item => item.id === pageId)
       .children.map(item => ({
         id: item.id,
-        name: item.name
+        name: item.name,
+        blueprint: JSON.parse(item.getPluginData('blueprint'))
       }))
   },
   selectNode({nodeId}: {nodeId: string}) {
@@ -26,19 +27,24 @@ const actions = {
       figma.currentPage.selection = [node]
     }
   },
-  createStateFrame({name}: {name: string}) {
-    const frame = figma.createFrame()
+  createStateFrame({name, blueprint}: {name: string; blueprint: any}) {
+    const pageId = actions.getDocumentValue({key: 'contextPageId'})
+    const page = figma.root.children.find(item => item.id === pageId && item.type === 'PAGE')
+    if (!page) return {}
+
+    const frame = figma.createComponent()
     frame.name = name
-    figma.currentPage.appendChild(frame)
-    figma.currentPage.selection = [frame]
+    frame.setPluginData('blueprint', JSON.stringify(blueprint))
+    page.appendChild(frame)
+    page.selection = [frame]
     figma.viewport.scrollAndZoomIntoView([frame])
     return {id: frame.id}
   },
   setDocumentValue({key, value}: {key: string; value: any}) {
-    figma.root.setPluginData(key, value)
+    figma.root.setPluginData(key, JSON.stringify(value))
   },
   getDocumentValue({key}: {key: string}) {
-    return figma.root.getPluginData(key)
+    return JSON.parse(figma.root.getPluginData(key))
   },
   setNodeValue({nodeId, key, value}: {nodeId: string; key: string; value: any}) {
     figma.root.findOne(item => item.id === nodeId).setPluginData(key, value)

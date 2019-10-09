@@ -2,10 +2,10 @@
 # yarn lockfile v1
 
 
-"@smashing/form@^0.5.0":
-  version "0.5.0"
-  resolved "https://registry.yarnpkg.com/@smashing/form/-/form-0.5.0.tgz#2655154c84de0df1f9e6c8e2c7da1dcb6e45d914"
-  integrity sha512-zzFPZCZbHK2DcgE7jBGZMPY9jpRk9wCUqQPCSgjD18jm3IECXuj3SdGb5gmn7WDrLZmsMwsQcepxE6qmHd+65A==
+"@smashing/form@^0.6.0":
+  version "0.6.0"
+  resolved "https://registry.yarnpkg.com/@smashing/form/-/form-0.6.0.tgz#d04b7f5ca37f0661f51287ab4c021ab4e51378a8"
+  integrity sha512-co0zZQE1QskhnSc7fpTRynIaO2yK1sT6m5QCSmJxDDnaNUFaeopcmM1KMW8RyR9dt/MjW5/Jcb1TICWwx2x3fA==
   dependencies:
     dot-prop "^5.1.0"
     react-fast-compare "^2.0.4"

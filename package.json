@@ -10,7 +10,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@smashing/form": "^0.5.0",
+    "@smashing/form": "^0.6.0",
     "@syncano/client": "^0.16.0-alpha.0d85dd34",
     "@types/classnames": "^2.2.9",
     "@types/react": "^16.9.3",

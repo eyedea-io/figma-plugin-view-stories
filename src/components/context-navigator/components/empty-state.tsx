@@ -15,7 +15,7 @@ export const EmptyState = observer(() => {
         <br /> Get started by adding scenarios.
       </Paragraph>
       <Paragraph>
-        <Button onClick={() => store.navigate('scenarios')}>Get started</Button>
+        <Button onClick={() => store.navigate('scenarios/create')}>Get started</Button>
       </Paragraph>
     </div>
   )
