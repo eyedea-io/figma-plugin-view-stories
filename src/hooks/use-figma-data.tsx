@@ -14,7 +14,7 @@ export const useFigmaData = () => {
     store.contexts.clear()
     store.setIsLoading(true)
 
-    const [scenarios, frames] = await Promise.all([
+    const [scenarios = [], frames = []] = await Promise.all([
       await post<Scenario[]>('getDocumentValue', {key: 'scenarios'}),
       (await post<
         Array<
@@ -28,7 +28,7 @@ export const useFigmaData = () => {
         >
       >('getPageNodes', {pageId: contextPageId})).reverse()
     ])
-    console.log(scenarios)
+    console.log(frames, scenarios)
     // Add contexts
     for (const item of frames) {
       const [platformName, contextName] = item.name.split(' / ')

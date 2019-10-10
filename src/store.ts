@@ -9,7 +9,7 @@ export const Store = types
   .model('Store', {
     isLoading: true,
     editedScenario: types.safeReference(models.Scenario),
-    url: types.optional(types.string, 'scenarios'),
+    url: types.optional(types.string, 'contexts'),
     token: types.maybe(types.string),
     profile: types.maybe(models.Profile),
     organizations: customTypes.collection(models.Organization, 'Organizations'),

@@ -48,17 +48,19 @@ function getContextPage() {
     page = figma.createPage()
     page.name = 'master - States'
     figma.root.appendChild(page)
+    actions.setDocumentValue({key: 'contextPageId', value: page.id})
   }
   return page
 }
 function getScenariosPage() {
-  let scenariosPage = figma.root.children.find(item => item.name === 'master - Scenarios')
-  if (!scenariosPage) {
-    scenariosPage = figma.createPage()
-    scenariosPage.name = 'master - Scenarios'
-    figma.root.appendChild(scenariosPage)
+  let page = figma.root.children.find(item => item.name === 'master - Scenarios')
+  if (!page) {
+    page = figma.createPage()
+    page.name = 'master - Scenarios'
+    figma.root.appendChild(page)
+    actions.setDocumentValue({key: 'scenariosPageId', value: page.id})
   }
-  return scenariosPage
+  return page
 }
 
 const actions = {
@@ -69,7 +71,6 @@ const actions = {
     }))
   },
   getPageNodes({pageId}: {pageId: string}) {
-    actions.organizeStatesPage()
     return figma.root.children
       .find(item => item.id === pageId)
       .children.map(item => ({
@@ -119,11 +120,6 @@ const actions = {
       scenarioX = 0
       scenarioY += scenarioHeight + 120
     })
-    // platforms.forEach(platform => {
-    //   Object.entries(platform.contexts).forEach(([contextName, states]) => {
-    //     states.forEach()
-    //   })
-    // })
   },
   organizeStatesPage() {
     const contextPage = getContextPage()
@@ -188,7 +184,11 @@ const actions = {
     figma.root.setPluginData(key, JSON.stringify(value))
   },
   getDocumentValue({key}: {key: string}) {
-    return JSON.parse(figma.root.getPluginData(key))
+    try {
+      return JSON.parse(figma.root.getPluginData(key))
+    } catch (err) {
+      return
+    }
   },
   setNodeValue({nodeId, key, value}: {nodeId: string; key: string; value: any}) {
     figma.root.findOne(item => item.id === nodeId).setPluginData(key, value)
@@ -211,3 +211,6 @@ figma.ui.onmessage = async (message: Message) => {
 
 // Show widget ui
 figma.showUI(__html__, UI_OPTIONS)
+
+getContextPage()
+getScenariosPage()

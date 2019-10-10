@@ -28,7 +28,7 @@ const ContextNavigator = observer(() => {
   const {Field, form} = useForm({
     initialValues: {
       statusFilter: 'all',
-      platformName: 'Mobile'
+      platformName: 'Desktop'
     }
   })
   const localStore = useLocalStore(() => ({
@@ -41,7 +41,7 @@ const ContextNavigator = observer(() => {
 
   // Load platform id from store
   React.useEffect(() => {
-    form.setFieldValue('platformName', platformId)
+    form.setFieldValue('platformName', platformId || 'Desktop')
   }, [platformId])
 
   // Save platform id on select
@@ -60,6 +60,7 @@ const ContextNavigator = observer(() => {
 
   return (
     <div className="states-view">
+      {console.log(form.values)}
       <Header countFilter={countFilter} Field={Field} />
       <Observer>
         {() =>
