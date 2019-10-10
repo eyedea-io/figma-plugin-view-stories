@@ -28,6 +28,7 @@ export const useFigmaData = () => {
         >
       >('getPageNodes', {pageId: contextPageId})).reverse()
     ])
+    console.log(scenarios)
     // Add contexts
     for (const item of frames) {
       const [platformName, contextName] = item.name.split(' / ')

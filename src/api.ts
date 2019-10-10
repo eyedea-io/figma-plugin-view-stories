@@ -2,7 +2,6 @@ const UI_OPTIONS = {
   height: 720,
   width: 380
 }
-figma.root.setPluginData('scenarios', JSON.stringify([]))
 
 function getPlatformsWithContexts() {
   const page = getContextPage()
