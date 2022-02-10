@@ -25,7 +25,7 @@
     "mobx": "^5.13.1",
     "mobx-react-lite": "^1.4.1",
     "mobx-state-tree": "^3.14.1",
-    "node-sass": "^4.12.0",
+    "node-sass": "^7.0.0",
     "react": "^16.9.0",
     "react-dnd": "^9.4.0",
     "react-dnd-html5-backend": "^9.4.0",
